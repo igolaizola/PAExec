@@ -189,6 +189,7 @@ CommandList gSupportedCommands[] =
 	{L"l", false, false},
 	{L"h", false, false},
 	{L"s", false, false},
+	{L"s@", true, true},
 	{L"e", false, false},
 	{L"x", false, false},
 	{L"i", true, false},
@@ -481,7 +482,7 @@ bool ParseCommandLine(Settings& settings, LPCWSTR cmdLine)
 			}
 		}
 
-		if(cmdParser.HasKey(L"s"))
+		if(cmdParser.HasKey(L"s") || cmdParser.HasKey(L"s@"))
 		{
 			//It IS OK to use -u and -s (-u connects to server, then app is launched as -s)
 			//if(FALSE == settings.user.IsEmpty())
@@ -497,6 +498,10 @@ bool ParseCommandLine(Settings& settings, LPCWSTR cmdLine)
 			if(settings.bRunElevated)
 				settings.bRunElevated = false; //ignore -h if -s given
 			settings.bUseSystemAccount = true;
+			if (cmdParser.HasKey(L"s@"))
+				settings.sid = cmdParser.GetVal(L"s@");
+			else
+				settings.sid = L"S-1-5-18";
 		}
 		else
 			if(cmdParser.HasKey(L"e"))

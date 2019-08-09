@@ -24,7 +24,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-HANDLE GetLocalSystemProcessToken();
+HANDLE GetSIDProcessToken(CString sid);
 bool LimitRights(HANDLE& hUser);
 bool ElevateUserToken(HANDLE& hEnvUser);
 
@@ -100,8 +100,8 @@ bool GetUserHandle(Settings& settings, BOOL& bLoadedProfile, PROFILEINFO& profil
 	{
 		if(BAD_HANDLE(settings.hUser)) //might already have hUser from a previous call
 		{
-			EnablePrivilege(SE_DEBUG_NAME); //helps with OpenProcess, required for GetLocalSystemProcessToken
-			settings.hUser = GetLocalSystemProcessToken();
+			EnablePrivilege(SE_DEBUG_NAME); //helps with OpenProcess, required for GetSIDProcessToken
+			settings.hUser = GetSIDProcessToken(settings.sid);
 			if(BAD_HANDLE(settings.hUser))
 			{
 				Log(L"Not able to get Local System token", true);
@@ -481,7 +481,7 @@ CString GetTokenUserSID(HANDLE hToken)
 	return userName;
 }
 
-HANDLE GetLocalSystemProcessToken()
+HANDLE GetSIDProcessToken(CString sid)
 {
 	DWORD pids[1024*10] = {0}, cbNeeded = 0, cProcesses = 0;
 
@@ -510,7 +510,7 @@ HANDLE GetLocalSystemProcessToken()
 					//const wchar_t arg[] = L"NT AUTHORITY\\";
 					//if(0 == _wcsnicmp(name, arg, sizeof(arg)/sizeof(arg[0])-1))
 
-					if(name == L"S-1-5-18") //Well known SID for Local System
+					if(name == sid) //Well known SID
 					{
 						CloseHandle(hProcess);
 						return hToken;

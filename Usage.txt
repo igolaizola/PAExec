@@ -114,6 +114,8 @@ Additional options only available in PAExec:
      -lo       Log Output to file.  Ex: -lo C:\Temp\PAExec.log
                The file will be UTF-8 with a Byte Order Mark at the start.  
 
+     -s@       Run the process in the specified SID account. Ex: -s@ S-1-5-19
+
      -p@        Will read the first line of the given file and use that as the 
                 password.  File should be saved as UTF-8 with or without
                 Byte Order Mark.
